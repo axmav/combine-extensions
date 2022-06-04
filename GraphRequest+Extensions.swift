@@ -9,6 +9,9 @@ import Foundation
 import Combine
 import FacebookCore
 
+struct GraphRequestUnwrappingException: Error {
+}
+
 extension GraphRequest {
     func start() -> AnyPublisher<Any?, Error> {
         return Deferred {
@@ -21,7 +24,19 @@ extension GraphRequest {
                     }
                 }
             }
-        }.eraseToAnyPublisher()
+        }
+        .eraseToAnyPublisher()
+    }
+    
+    func start<T>(type: T.Type) -> AnyPublisher<T, Error> {
+        start()
+            .tryMap({ result -> T in
+                if let res = result as? T {
+                    return res
+                }
+                throw GraphRequestUnwrappingException()
+            })
+            .eraseToAnyPublisher()
     }
 }
 
