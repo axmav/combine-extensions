@@ -24,7 +24,7 @@ let publisher = GraphRequest(graphPath: "me", parameters: ["fields": "id, name, 
 
 ## Facebook Login
 
-Facebook SDK Login button for SwiftUI + Combine ([LoginManager+Extensions.swift](https://github.com/axmav/combine-extensions/blob/main/LoginManager%2BExtensions.swift). In the example below we use it in combination with GraphRequest.
+Facebook SDK Login button for SwiftUI + Combine ([LoginManager+Extensions.swift](https://github.com/axmav/combine-extensions/blob/main/LoginManager%2BExtensions.swift)). In the example below we use it in combination with GraphRequest.
 
 ```swift
 LoginManager()
