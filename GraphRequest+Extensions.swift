@@ -9,9 +9,6 @@ import Foundation
 import Combine
 import FacebookCore
 
-struct GraphRequestUnwrappingException: Error {
-}
-
 extension GraphRequest {
     func start() -> AnyPublisher<Any?, Error> {
         return Deferred {
@@ -28,13 +25,12 @@ extension GraphRequest {
         .eraseToAnyPublisher()
     }
     
-    func start<T>(type: T.Type) -> AnyPublisher<T, Error> {
+    func start<T>(type: T.Type, decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<T?, Error> where T: Decodable {
         start()
-            .tryMap({ result -> T in
-                if let res = result as? T {
-                    return res
-                }
-                throw GraphRequestUnwrappingException()
+            .tryMap({ result -> T? in
+                guard let result = result else { return nil }
+                let object = try decoder.decode(T.self, from: JSONSerialization.data(withJSONObject: result))
+                return object
             })
             .eraseToAnyPublisher()
     }
